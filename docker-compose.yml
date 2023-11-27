@@ -1,0 +1,28 @@
+version: "3"
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: rates
+    ports:
+      - "5432:5432"
+  app:
+    build:
+      context: ./
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: "postgresql://root:root@db:5432/rates"
+      BINANCE_WS_URL: "wss://stream.binance.com:9443/ws/"
+      BASE_CURRENCY: "btc"
+      QUOTE_CURRENCY: "usdt"
+    links:
+      - db
+    volumes:
+      - ./:/usr/src/app/
